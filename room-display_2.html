@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Vergaderruimte">
+  <title>Vergaderruimte</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --free: #1a1a1a;
+      --free-accent: #00e5a0;
+      --free-accent-dim: rgba(0, 229, 160, 0.12);
+      --busy: #1a1a1a;
+      --busy-accent: #ff4d4d;
+      --busy-accent-dim: rgba(255, 77, 77, 0.12);
+      --soon-accent: #ffaa00;
+      --soon-accent-dim: rgba(255, 170, 0, 0.12);
+      --text-primary: #f0f0f0;
+      --text-secondary: rgba(240,240,240,0.45);
+      --text-tertiary: rgba(240,240,240,0.2);
+      --surface: rgba(255,255,255,0.04);
+      --border: rgba(255,255,255,0.07);
+      --accent: var(--free-accent);
+      --accent-dim: var(--free-accent-dim);
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      background: #0f0f0f;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+      touch-action: none;
+      user-select: none;
+    }
+
+    #app {
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+      padding: 48px 56px;
+      position: relative;
+      transition: background 0.8s ease;
+    }
+
+    /* Ambient glow */
+    #app::before {
+      content: '';
+      position: fixed;
+      top: -30%;
+      left: -20%;
+      width: 80vw;
+      height: 80vw;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--accent-dim) 0%, transparent 70%);
+      pointer-events: none;
+      transition: background 0.8s ease;
+      z-index: 0;
+    }
+
+    .content { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: auto;
+    }
+
+    .room-name {
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+
+    .clock-block { text-align: right; }
+
+    .time {
+      font-family: 'DM Mono', monospace;
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      letter-spacing: 0.05em;
+    }
+
+    .date {
+      font-size: 13px;
+      color: var(--text-tertiary);
+      margin-top: 4px;
+      letter-spacing: 0.06em;
+    }
+
+    /* Main status */
+    .main {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      flex: 1;
+      padding: 40px 0;
+    }
+
+    .status-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 12px var(--accent);
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(0.85); }
+    }
+
+    .status-text {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .meeting-title {
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: 300;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      max-width: 80%;
+      margin-bottom: 20px;
+    }
+
+    .meeting-meta {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .meta-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 8px 16px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.02em;
+    }
+
+    .meta-chip svg {
+      opacity: 0.5;
+      flex-shrink: 0;
+    }
+
+    /* Free state */
+    .free-title {
+      font-size: clamp(48px, 8vw, 80px);
+      font-weight: 300;
+      letter-spacing: -0.03em;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .free-sub {
+      font-size: 18px;
+      color: var(--text-secondary);
+      font-weight: 300;
+    }
+
+    /* Divider */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+      margin: 32px 0;
+    }
+
+    /* Upcoming */
+    .upcoming-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 20px;
+    }
+
+    .upcoming-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .upcoming-item {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 16px 20px;
+      background: var(--surface);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      transition: opacity 0.3s;
+    }
+
+    .upcoming-time {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--text-tertiary);
+      white-space: nowrap;
+      min-width: 100px;
+    }
+
+    .upcoming-name {
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .upcoming-duration {
+      margin-left: auto;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--text-tertiary);
+      white-space: nowrap;
+    }
+
+    /* No upcoming */
+    .no-upcoming {
+      font-size: 14px;
+      color: var(--text-tertiary);
+      font-style: italic;
+    }
+
+    /* Progress bar */
+    .progress-container {
+      margin-top: 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .progress-track {
+      flex: 1;
+      height: 3px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 100px;
+      transition: width 1s linear;
+      opacity: 0.6;
+    }
+
+    .progress-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--text-tertiary);
+      white-space: nowrap;
+    }
+
+    /* Loading / error */
+    .state-overlay {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      background: #0f0f0f;
+      z-index: 100;
+    }
+
+    .loader {
+      width: 32px;
+      height: 32px;
+      border: 2px solid var(--border);
+      border-top-color: var(--free-accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .state-text {
+      font-size: 14px;
+      color: var(--text-tertiary);
+      letter-spacing: 0.06em;
+    }
+
+    /* Config screen */
+    .config-screen {
+      position: fixed;
+      inset: 0;
+      background: #0f0f0f;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px;
+      z-index: 200;
+    }
+
+    .config-inner {
+      max-width: 520px;
+      width: 100%;
+    }
+
+    .config-title {
+      font-size: 28px;
+      font-weight: 300;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+
+    .config-sub {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+
+    .config-field { margin-bottom: 20px; }
+
+    .config-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 8px;
+    }
+
+    .config-input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .config-input:focus {
+      border-color: var(--free-accent);
+    }
+
+    .config-btn {
+      width: 100%;
+      padding: 16px;
+      background: var(--free-accent);
+      color: #0f0f0f;
+      border: none;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: opacity 0.2s;
+    }
+
+    .config-btn:hover { opacity: 0.85; }
+
+    .config-hint {
+      margin-top: 20px;
+      font-size: 12px;
+      color: var(--text-tertiary);
+      line-height: 1.6;
+    }
+
+    .config-hint a { color: var(--free-accent); text-decoration: none; }
+
+    /* Tap to configure (hidden zone) */
+    .tap-zone {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      width: 60px;
+      height: 60px;
+      z-index: 50;
+    }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<!-- Config screen (shown on first use) -->
+<div class="config-screen" id="configScreen">
+  <div class="config-inner">
+    <div class="room-name" style="margin-bottom:32px; font-size:13px;">⬡ VERGADERRUIMTE DISPLAY</div>
+    <h1 class="config-title">Instellen</h1>
+    <p class="config-sub">Vul hieronder je Google Calendar gegevens in. Dit hoef je maar één keer te doen.</p>
+
+    <div class="config-field">
+      <label class="config-label" for="inputApiKey">Google API Key</label>
+      <input class="config-input" id="inputApiKey" type="text" placeholder="AIzaSy..." autocomplete="off" autocorrect="off" spellcheck="false">
+    </div>
+
+    <div class="config-field">
+      <label class="config-label" for="inputCalId">Calendar ID</label>
+      <input class="config-input" id="inputCalId" type="text" placeholder="naam@resource.calendar.google.com" autocomplete="off" autocorrect="off" spellcheck="false">
+    </div>
+
+    <div class="config-field">
+      <label class="config-label" for="inputRoomName">Naam van de ruimte</label>
+      <input class="config-input" id="inputRoomName" type="text" placeholder="Vergaderruimte A" autocomplete="off">
+    </div>
+
+    <button class="config-btn" onclick="saveConfig()">Opslaan en starten</button>
+
+    <p class="config-hint">
+      Hoe dit werkt: zie de instructies die je van Daan hebt gekregen.<br>
+      Tik 5× linksboven op het scherm om later terug te komen naar dit scherm.
+    </p>
+  </div>
+</div>
+
+<!-- Loading state -->
+<div class="state-overlay hidden" id="loadingScreen">
+  <div class="loader"></div>
+  <span class="state-text">Agenda ophalen...</span>
+</div>
+
+<!-- Main display -->
+<div id="app">
+  <div class="content">
+    <!-- Header -->
+    <div class="header">
+      <span class="room-name" id="roomNameDisplay">Vergaderruimte</span>
+      <div class="clock-block">
+        <div class="time" id="clock">00:00</div>
+        <div class="date" id="dateDisplay"></div>
+      </div>
+    </div>
+
+    <!-- Main status -->
+    <div class="main" id="mainContent">
+      <!-- Filled by JS -->
+    </div>
+
+    <!-- Upcoming -->
+    <div>
+      <div class="divider"></div>
+      <div class="upcoming-label">Volgende afspraken</div>
+      <div class="upcoming-list" id="upcomingList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Secret tap zone (bottom-right corner, 5 taps = open config) -->
+<div class="tap-zone" id="tapZone"></div>
+
+<script>
+  // ── CONFIG ──────────────────────────────────────────────────────────────────
+  let API_KEY = localStorage.getItem('gcal_api_key') || '';
+  let CALENDAR_ID = localStorage.getItem('gcal_cal_id') || '';
+  let ROOM_NAME = localStorage.getItem('gcal_room_name') || 'Vergaderruimte';
+  let events = [];
+  let refreshInterval = null;
+
+  // ── STARTUP ─────────────────────────────────────────────────────────────────
+  function init() {
+    if (!API_KEY || !CALENDAR_ID) {
+      showConfig();
+    } else {
+      hideConfig();
+      document.getElementById('roomNameDisplay').textContent = ROOM_NAME;
+      startClock();
+      fetchEvents();
+      refreshInterval = setInterval(fetchEvents, 30000); // refresh every 30 seconden
+    }
+  }
+
+  // ── CONFIG ───────────────────────────────────────────────────────────────────
+  function showConfig() {
+    document.getElementById('configScreen').classList.remove('hidden');
+    document.getElementById('inputApiKey').value = API_KEY;
+    document.getElementById('inputCalId').value = CALENDAR_ID;
+    document.getElementById('inputRoomName').value = ROOM_NAME;
+  }
+
+  function hideConfig() {
+    document.getElementById('configScreen').classList.add('hidden');
+  }
+
+  function saveConfig() {
+    const key = document.getElementById('inputApiKey').value.trim();
+    const calId = document.getElementById('inputCalId').value.trim();
+    const name = document.getElementById('inputRoomName').value.trim() || 'Vergaderruimte';
+    if (!key || !calId) { alert('Vul beide velden in.'); return; }
+    localStorage.setItem('gcal_api_key', key);
+    localStorage.setItem('gcal_cal_id', calId);
+    localStorage.setItem('gcal_room_name', name);
+    API_KEY = key; CALENDAR_ID = calId; ROOM_NAME = name;
+    hideConfig();
+    document.getElementById('roomNameDisplay').textContent = ROOM_NAME;
+    clearInterval(refreshInterval);
+    startClock();
+    fetchEvents();
+    refreshInterval = setInterval(fetchEvents, 30000);
+  }
+
+  // Secret tap zone: 5 taps to re-open config
+  let tapCount = 0, tapTimer = null;
+  document.getElementById('tapZone').addEventListener('click', () => {
+    tapCount++;
+    clearTimeout(tapTimer);
+    tapTimer = setTimeout(() => { tapCount = 0; }, 2000);
+    if (tapCount >= 5) { tapCount = 0; showConfig(); }
+  });
+
+  // ── CLOCK ────────────────────────────────────────────────────────────────────
+  function startClock() {
+    updateClock();
+    setInterval(updateClock, 1000);
+  }
+
+  function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    document.getElementById('clock').textContent = `${h}:${m}`;
+
+    const days = ['zondag','maandag','dinsdag','woensdag','donderdag','vrijdag','zaterdag'];
+    const months = ['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+    document.getElementById('dateDisplay').textContent =
+      `${days[now.getDay()]} ${now.getDate()} ${months[now.getMonth()]}`;
+  }
+
+  // ── FETCH EVENTS ──────────────────────────────────────────────────────────────
+  async function fetchEvents() {
+    const loading = document.getElementById('loadingScreen');
+    loading.classList.remove('hidden');
+
+    const now = new Date();
+    const timeMin = now.toISOString();
+    const timeMax = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59).toISOString();
+
+    const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CALENDAR_ID)}/events`
+      + `?key=${API_KEY}`
+      + `&timeMin=${timeMin}`
+      + `&timeMax=${timeMax}`
+      + `&singleEvents=true`
+      + `&orderBy=startTime`
+      + `&maxResults=10`;
+
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.error) throw new Error(data.error.message);
+      events = (data.items || []).filter(e => e.status !== 'cancelled');
+    } catch (err) {
+      console.error('Calendar fetch error:', err);
+      events = null;
+    }
+
+    loading.classList.add('hidden');
+    renderDisplay();
+  }
+
+  // ── RENDER ────────────────────────────────────────────────────────────────────
+  function renderDisplay() {
+    if (events === null) {
+      renderError();
+      return;
+    }
+
+    const now = new Date();
+    const current = events.find(e => {
+      const start = new Date(e.start.dateTime || e.start.date);
+      const end = new Date(e.end.dateTime || e.end.date);
+      return start <= now && end > now;
+    });
+
+    const upcoming = events.filter(e => {
+      const start = new Date(e.start.dateTime || e.start.date);
+      return start > now;
+    }).slice(0, 3);
+
+    // Determine state
+    const nextEvent = events.find(e => new Date(e.start.dateTime || e.start.date) > now);
+    const minsToNext = nextEvent
+      ? Math.round((new Date(nextEvent.start.dateTime || nextEvent.start.date) - now) / 60000)
+      : null;
+    const soonThreshold = 15;
+    const isSoon = !current && minsToNext !== null && minsToNext <= soonThreshold;
+
+    // Set accent color
+    const root = document.documentElement;
+    if (current) {
+      root.style.setProperty('--accent', 'var(--busy-accent)');
+      root.style.setProperty('--accent-dim', 'var(--busy-accent-dim)');
+    } else if (isSoon) {
+      root.style.setProperty('--accent', 'var(--soon-accent)');
+      root.style.setProperty('--accent-dim', 'var(--soon-accent-dim)');
+    } else {
+      root.style.setProperty('--accent', 'var(--free-accent)');
+      root.style.setProperty('--accent-dim', 'var(--free-accent-dim)');
+    }
+
+    // Render main content
+    const main = document.getElementById('mainContent');
+    if (current) {
+      const start = new Date(current.start.dateTime);
+      const end = new Date(current.end.dateTime);
+      const elapsed = now - start;
+      const total = end - start;
+      const pct = Math.min(100, Math.round((elapsed / total) * 100));
+      const remaining = Math.round((end - now) / 60000);
+
+      main.innerHTML = `
+        <div class="status-label">
+          <span class="status-dot"></span>
+          <span class="status-text">Bezet</span>
+        </div>
+        <div class="meeting-title">${escHtml(current.summary || 'Vergadering')}</div>
+        <div class="meeting-meta">
+          <span class="meta-chip">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            ${fmt(start)} – ${fmt(end)}
+          </span>
+          ${current.organizer?.displayName ? `<span class="meta-chip">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            ${escHtml(current.organizer.displayName)}
+          </span>` : ''}
+        </div>
+        <div class="progress-container">
+          <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+          <span class="progress-label">nog ${remaining} min</span>
+        </div>
+      `;
+    } else if (isSoon) {
+      main.innerHTML = `
+        <div class="status-label">
+          <span class="status-dot"></span>
+          <span class="status-text">Begint zo</span>
+        </div>
+        <div class="free-title" style="color:var(--soon-accent)">Over ${minsToNext} min</div>
+        <div class="free-sub">${escHtml(nextEvent.summary || 'Vergadering')} start om ${fmt(new Date(nextEvent.start.dateTime))}</div>
+      `;
+    } else {
+      const freeUntil = nextEvent
+        ? ` tot ${fmt(new Date(nextEvent.start.dateTime))}`
+        : ' de rest van de dag';
+      main.innerHTML = `
+        <div class="status-label">
+          <span class="status-dot"></span>
+          <span class="status-text">Beschikbaar</span>
+        </div>
+        <div class="free-title">Vrij</div>
+        <div class="free-sub">Beschikbaar${freeUntil}</div>
+      `;
+    }
+
+    // Render upcoming
+    const list = document.getElementById('upcomingList');
+    if (upcoming.length === 0) {
+      list.innerHTML = `<span class="no-upcoming">Geen verdere afspraken vandaag</span>`;
+    } else {
+      list.innerHTML = upcoming.map(e => {
+        const s = new Date(e.start.dateTime || e.start.date);
+        const en = new Date(e.end.dateTime || e.end.date);
+        const dur = Math.round((en - s) / 60000);
+        return `
+          <div class="upcoming-item">
+            <span class="upcoming-time">${fmt(s)}</span>
+            <span class="upcoming-name">${escHtml(e.summary || 'Vergadering')}</span>
+            <span class="upcoming-duration">${dur} min</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Re-render every 10s to keep progress bar and clock updated
+    setTimeout(() => { if (API_KEY && CALENDAR_ID) renderDisplay(); }, 10000);
+  }
+
+  function renderError() {
+    document.getElementById('mainContent').innerHTML = `
+      <div class="status-label">
+        <span class="status-dot" style="background:#ff4d4d;box-shadow:0 0 12px #ff4d4d"></span>
+        <span class="status-text" style="color:#ff4d4d">Verbindingsfout</span>
+      </div>
+      <div class="free-title" style="color:var(--text-secondary);font-size:32px">Kan agenda niet laden</div>
+      <div class="free-sub">Controleer de API key en Calendar ID</div>
+    `;
+    document.getElementById('upcomingList').innerHTML = '';
+  }
+
+  // ── HELPERS ───────────────────────────────────────────────────────────────────
+  function fmt(date) {
+    return `${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}`;
+  }
+
+  function escHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── GO ────────────────────────────────────────────────────────────────────────
+  init();
+</script>
+</body>
+</html>

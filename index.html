@@ -52,7 +52,6 @@
       transition: background 0.8s ease;
     }
 
-    /* Ambient glow */
     #app::before {
       content: '';
       position: fixed;
@@ -69,7 +68,6 @@
 
     .content { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; }
 
-    /* Header */
     .header {
       display: flex;
       justify-content: space-between;
@@ -104,7 +102,6 @@
       text-align: right;
     }
 
-    /* Main status */
     .main {
       display: flex;
       flex-direction: column;
@@ -155,7 +152,7 @@
     .meeting-meta {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 10px;
       flex-wrap: wrap;
     }
 
@@ -169,16 +166,12 @@
       padding: 8px 16px;
       font-size: 14px;
       color: var(--text-secondary);
-      font-family: 'DM Mono', monospace;
-      letter-spacing: 0.02em;
+      font-family: 'DM Sans', sans-serif;
+      letter-spacing: 0.01em;
     }
 
-    .meta-chip svg {
-      opacity: 0.5;
-      flex-shrink: 0;
-    }
+    .meta-chip svg { opacity: 0.5; flex-shrink: 0; }
 
-    /* Free state */
     .free-title {
       font-size: clamp(48px, 8vw, 80px);
       font-weight: 500;
@@ -194,7 +187,6 @@
       font-weight: 300;
     }
 
-    /* Divider */
     .divider {
       width: 100%;
       height: 1px;
@@ -202,7 +194,6 @@
       margin: 32px 0;
     }
 
-    /* Upcoming */
     .upcoming-label {
       font-size: 11px;
       font-weight: 500;
@@ -212,11 +203,7 @@
       margin-bottom: 20px;
     }
 
-    .upcoming-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+    .upcoming-list { display: flex; flex-direction: column; gap: 12px; }
 
     .upcoming-item {
       display: flex;
@@ -226,7 +213,6 @@
       background: var(--surface);
       border-radius: 12px;
       border: 1px solid var(--border);
-      transition: opacity 0.3s;
     }
 
     .upcoming-time {
@@ -254,20 +240,9 @@
       white-space: nowrap;
     }
 
-    /* No upcoming */
-    .no-upcoming {
-      font-size: 14px;
-      color: var(--text-tertiary);
-      font-style: italic;
-    }
+    .no-upcoming { font-size: 14px; color: var(--text-tertiary); font-style: italic; }
 
-    /* Progress bar */
-    .progress-container {
-      margin-top: 24px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
+    .progress-container { margin-top: 24px; display: flex; align-items: center; gap: 16px; }
 
     .progress-track {
       flex: 1;
@@ -292,7 +267,6 @@
       white-space: nowrap;
     }
 
-    /* Loading / error */
     .state-overlay {
       position: fixed;
       inset: 0;
@@ -316,13 +290,8 @@
 
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    .state-text {
-      font-size: 14px;
-      color: var(--text-tertiary);
-      letter-spacing: 0.06em;
-    }
+    .state-text { font-size: 14px; color: var(--text-tertiary); letter-spacing: 0.06em; }
 
-    /* Config screen */
     .config-screen {
       position: fixed;
       inset: 0;
@@ -335,24 +304,11 @@
       z-index: 200;
     }
 
-    .config-inner {
-      max-width: 520px;
-      width: 100%;
-    }
+    .config-inner { max-width: 520px; width: 100%; }
 
-    .config-title {
-      font-size: 28px;
-      font-weight: 300;
-      margin-bottom: 8px;
-      color: var(--text-primary);
-    }
+    .config-title { font-size: 28px; font-weight: 300; margin-bottom: 8px; color: var(--text-primary); }
 
-    .config-sub {
-      font-size: 14px;
-      color: var(--text-secondary);
-      margin-bottom: 40px;
-      line-height: 1.6;
-    }
+    .config-sub { font-size: 14px; color: var(--text-secondary); margin-bottom: 40px; line-height: 1.6; }
 
     .config-field { margin-bottom: 20px; }
 
@@ -379,9 +335,7 @@
       transition: border-color 0.2s;
     }
 
-    .config-input:focus {
-      border-color: var(--free-accent);
-    }
+    .config-input:focus { border-color: var(--free-accent); }
 
     .config-btn {
       width: 100%;
@@ -401,16 +355,8 @@
 
     .config-btn:hover { opacity: 0.85; }
 
-    .config-hint {
-      margin-top: 20px;
-      font-size: 12px;
-      color: var(--text-tertiary);
-      line-height: 1.6;
-    }
+    .config-hint { margin-top: 20px; font-size: 12px; color: var(--text-tertiary); line-height: 1.6; }
 
-    .config-hint a { color: var(--free-accent); text-decoration: none; }
-
-    /* Settings button */
     .settings-btn {
       position: fixed;
       bottom: 20px;
@@ -435,47 +381,35 @@
 </head>
 <body>
 
-<!-- Config screen (shown on first use) -->
 <div class="config-screen" id="configScreen">
   <div class="config-inner">
     <div class="room-name" style="margin-bottom:32px; font-size:13px;">⬡ VERGADERRUIMTE DISPLAY</div>
     <h1 class="config-title">Instellen</h1>
     <p class="config-sub">Vul hieronder je Google Calendar gegevens in. Dit hoef je maar één keer te doen.</p>
-
     <div class="config-field">
       <label class="config-label" for="inputApiKey">Google API Key</label>
       <input class="config-input" id="inputApiKey" type="text" placeholder="AIzaSy..." autocomplete="off" autocorrect="off" spellcheck="false">
     </div>
-
     <div class="config-field">
       <label class="config-label" for="inputCalId">Calendar ID</label>
       <input class="config-input" id="inputCalId" type="text" placeholder="naam@resource.calendar.google.com" autocomplete="off" autocorrect="off" spellcheck="false">
     </div>
-
     <div class="config-field">
       <label class="config-label" for="inputRoomName">Naam van de ruimte</label>
       <input class="config-input" id="inputRoomName" type="text" placeholder="Vergaderruimte A" autocomplete="off">
     </div>
-
     <button class="config-btn" onclick="saveConfig()">Opslaan en starten</button>
-
-    <p class="config-hint">
-      Hoe dit werkt: zie de instructies die je van Daan hebt gekregen.<br>
-      Tik 5× linksboven op het scherm om later terug te komen naar dit scherm.
-    </p>
+    <p class="config-hint">Tik op het tandwiel rechtsonder om terug te komen naar dit scherm.</p>
   </div>
 </div>
 
-<!-- Loading state -->
 <div class="state-overlay hidden" id="loadingScreen">
   <div class="loader"></div>
   <span class="state-text">Agenda ophalen...</span>
 </div>
 
-<!-- Main display -->
 <div id="app">
   <div class="content">
-    <!-- Header -->
     <div class="header">
       <span class="room-name" id="roomNameDisplay">Vergaderruimte</span>
       <div class="clock-block">
@@ -483,13 +417,7 @@
         <div class="date" id="dateDisplay"></div>
       </div>
     </div>
-
-    <!-- Main status -->
-    <div class="main" id="mainContent">
-      <!-- Filled by JS -->
-    </div>
-
-    <!-- Upcoming -->
+    <div class="main" id="mainContent"></div>
     <div>
       <div class="divider"></div>
       <div class="upcoming-label">Volgende afspraken</div>
@@ -498,7 +426,6 @@
   </div>
 </div>
 
-<!-- Settings button (rechtsonder) -->
 <div class="settings-btn" id="settingsBtn">
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
     <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
@@ -506,27 +433,23 @@
 </div>
 
 <script>
-  // ── CONFIG ──────────────────────────────────────────────────────────────────
   let API_KEY = localStorage.getItem('gcal_api_key') || '';
   let CALENDAR_ID = localStorage.getItem('gcal_cal_id') || '';
   let ROOM_NAME = localStorage.getItem('gcal_room_name') || 'Vergaderruimte';
   let events = [];
   let refreshInterval = null;
 
-  // ── STARTUP ─────────────────────────────────────────────────────────────────
   function init() {
-    if (!API_KEY || !CALENDAR_ID) {
-      showConfig();
-    } else {
+    if (!API_KEY || !CALENDAR_ID) { showConfig(); }
+    else {
       hideConfig();
       document.getElementById('roomNameDisplay').textContent = ROOM_NAME;
       startClock();
       fetchEvents();
-      refreshInterval = setInterval(fetchEvents, 30000); // refresh every 30 seconden
+      refreshInterval = setInterval(fetchEvents, 30000);
     }
   }
 
-  // ── CONFIG ───────────────────────────────────────────────────────────────────
   function showConfig() {
     document.getElementById('configScreen').classList.remove('hidden');
     document.getElementById('inputApiKey').value = API_KEY;
@@ -534,9 +457,7 @@
     document.getElementById('inputRoomName').value = ROOM_NAME;
   }
 
-  function hideConfig() {
-    document.getElementById('configScreen').classList.add('hidden');
-  }
+  function hideConfig() { document.getElementById('configScreen').classList.add('hidden'); }
 
   function saveConfig() {
     const key = document.getElementById('inputApiKey').value.trim();
@@ -555,86 +476,53 @@
     refreshInterval = setInterval(fetchEvents, 30000);
   }
 
-  // Settings button
   document.getElementById('settingsBtn').addEventListener('click', showConfig);
 
-  // ── CLOCK ────────────────────────────────────────────────────────────────────
-  function startClock() {
-    updateClock();
-    setInterval(updateClock, 1000);
-  }
+  function startClock() { updateClock(); setInterval(updateClock, 1000); }
 
   function updateClock() {
     const now = new Date();
-    const h = String(now.getHours()).padStart(2,'0');
-    const m = String(now.getMinutes()).padStart(2,'0');
-    document.getElementById('clock').textContent = `${h}:${m}`;
-
+    document.getElementById('clock').textContent =
+      `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
     const days = ['zondag','maandag','dinsdag','woensdag','donderdag','vrijdag','zaterdag'];
     const months = ['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
     document.getElementById('dateDisplay').textContent =
       `${days[now.getDay()]} ${now.getDate()} ${months[now.getMonth()]}`;
   }
 
-  // ── FETCH EVENTS ──────────────────────────────────────────────────────────────
   async function fetchEvents() {
-    const loading = document.getElementById('loadingScreen');
-    loading.classList.remove('hidden');
-
+    document.getElementById('loadingScreen').classList.remove('hidden');
     const now = new Date();
-    const timeMin = now.toISOString();
     const timeMax = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59).toISOString();
-
     const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CALENDAR_ID)}/events`
-      + `?key=${API_KEY}`
-      + `&timeMin=${timeMin}`
-      + `&timeMax=${timeMax}`
-      + `&singleEvents=true`
-      + `&orderBy=startTime`
-      + `&maxResults=10`;
-
+      + `?key=${API_KEY}&timeMin=${now.toISOString()}&timeMax=${timeMax}&singleEvents=true&orderBy=startTime&maxResults=10`;
     try {
       const res = await fetch(url);
       const data = await res.json();
       if (data.error) throw new Error(data.error.message);
       events = (data.items || []).filter(e => e.status !== 'cancelled');
     } catch (err) {
-      console.error('Calendar fetch error:', err);
+      console.error(err);
       events = null;
     }
-
-    loading.classList.add('hidden');
+    document.getElementById('loadingScreen').classList.add('hidden');
     renderDisplay();
   }
 
-  // ── RENDER ────────────────────────────────────────────────────────────────────
   function renderDisplay() {
-    if (events === null) {
-      renderError();
-      return;
-    }
+    if (events === null) { renderError(); return; }
 
     const now = new Date();
     const current = events.find(e => {
-      const start = new Date(e.start.dateTime || e.start.date);
-      const end = new Date(e.end.dateTime || e.end.date);
-      return start <= now && end > now;
+      const s = new Date(e.start.dateTime || e.start.date);
+      const en = new Date(e.end.dateTime || e.end.date);
+      return s <= now && en > now;
     });
-
-    const upcoming = events.filter(e => {
-      const start = new Date(e.start.dateTime || e.start.date);
-      return start > now;
-    }).slice(0, 3);
-
-    // Determine state
+    const upcoming = events.filter(e => new Date(e.start.dateTime || e.start.date) > now).slice(0, 3);
     const nextEvent = events.find(e => new Date(e.start.dateTime || e.start.date) > now);
-    const minsToNext = nextEvent
-      ? Math.round((new Date(nextEvent.start.dateTime || nextEvent.start.date) - now) / 60000)
-      : null;
-    const soonThreshold = 15;
-    const isSoon = !current && minsToNext !== null && minsToNext <= soonThreshold;
+    const minsToNext = nextEvent ? Math.round((new Date(nextEvent.start.dateTime || nextEvent.start.date) - now) / 60000) : null;
+    const isSoon = !current && minsToNext !== null && minsToNext <= 15;
 
-    // Set accent color
     const root = document.documentElement;
     if (current) {
       root.style.setProperty('--accent', 'var(--busy-accent)');
@@ -647,21 +535,23 @@
       root.style.setProperty('--accent-dim', 'var(--free-accent-dim)');
     }
 
-    // Render main content
     const main = document.getElementById('mainContent');
+
     if (current) {
       const start = new Date(current.start.dateTime);
       const end = new Date(current.end.dateTime);
-      const elapsed = now - start;
-      const total = end - start;
-      const pct = Math.min(100, Math.round((elapsed / total) * 100));
+      const pct = Math.min(100, Math.round(((now - start) / (end - start)) * 100));
       const remaining = Math.round((end - now) / 60000);
+      const attendees = (current.attendees || [])
+        .filter(a => !a.resource && !a.self && a.responseStatus !== 'declined')
+        .slice(0, 4)
+        .map(a => `<span class="meta-chip">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          ${escHtml(a.displayName || a.email.split('@')[0])}
+        </span>`).join('');
 
       main.innerHTML = `
-        <div class="status-label">
-          <span class="status-dot"></span>
-          <span class="status-text">Bezet</span>
-        </div>
+        <div class="status-label"><span class="status-dot"></span><span class="status-text">Bezet</span></div>
         <div class="meeting-title">${escHtml(current.summary || 'Zonder titel')}</div>
         <div class="meeting-meta">
           <span class="meta-chip">
@@ -672,55 +562,38 @@
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             ${escHtml(current.organizer.displayName)}
           </span>` : ''}
+          ${attendees}
         </div>
         <div class="progress-container">
           <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
           <span class="progress-label">nog ${remaining} min</span>
-        </div>
-      `;
+        </div>`;
     } else if (isSoon) {
       main.innerHTML = `
-        <div class="status-label">
-          <span class="status-dot"></span>
-          <span class="status-text">Begint zo</span>
-        </div>
+        <div class="status-label"><span class="status-dot"></span><span class="status-text">Begint zo</span></div>
         <div class="free-title" style="color:var(--soon-accent)">Over ${minsToNext} min</div>
-        <div class="free-sub">${escHtml(nextEvent.summary || 'Zonder titel')} start om ${fmt(new Date(nextEvent.start.dateTime))}</div>
-      `;
+        <div class="free-sub">${escHtml(nextEvent.summary || 'Zonder titel')} start om ${fmt(new Date(nextEvent.start.dateTime))}</div>`;
     } else {
-      const freeUntil = nextEvent
-        ? ` tot ${fmt(new Date(nextEvent.start.dateTime))}`
-        : ' de rest van de dag';
+      const freeUntil = nextEvent ? ` tot ${fmt(new Date(nextEvent.start.dateTime))}` : ' de rest van de dag';
       main.innerHTML = `
-        <div class="status-label">
-          <span class="status-dot"></span>
-          <span class="status-text">Beschikbaar</span>
-        </div>
+        <div class="status-label"><span class="status-dot"></span><span class="status-text">Beschikbaar</span></div>
         <div class="free-title">Vrij</div>
-        <div class="free-sub">Beschikbaar${freeUntil}</div>
-      `;
+        <div class="free-sub">Beschikbaar${freeUntil}</div>`;
     }
 
-    // Render upcoming
     const list = document.getElementById('upcomingList');
-    if (upcoming.length === 0) {
-      list.innerHTML = `<span class="no-upcoming">Geen verdere afspraken vandaag</span>`;
-    } else {
-      list.innerHTML = upcoming.map(e => {
-        const s = new Date(e.start.dateTime || e.start.date);
-        const en = new Date(e.end.dateTime || e.end.date);
-        const dur = Math.round((en - s) / 60000);
-        return `
-          <div class="upcoming-item">
+    list.innerHTML = upcoming.length === 0
+      ? `<span class="no-upcoming">Geen verdere afspraken vandaag</span>`
+      : upcoming.map(e => {
+          const s = new Date(e.start.dateTime || e.start.date);
+          const en = new Date(e.end.dateTime || e.end.date);
+          return `<div class="upcoming-item">
             <span class="upcoming-time">${fmt(s)}</span>
             <span class="upcoming-name">${escHtml(e.summary || 'Zonder titel')}</span>
-            <span class="upcoming-duration">${dur} min</span>
-          </div>
-        `;
-      }).join('');
-    }
+            <span class="upcoming-duration">${Math.round((en - s) / 60000)} min</span>
+          </div>`;
+        }).join('');
 
-    // Re-render every 10s to keep progress bar and clock updated
     setTimeout(() => { if (API_KEY && CALENDAR_ID) renderDisplay(); }, 10000);
   }
 
@@ -731,21 +604,18 @@
         <span class="status-text" style="color:#ff4d4d">Verbindingsfout</span>
       </div>
       <div class="free-title" style="color:var(--text-secondary);font-size:32px">Kan agenda niet laden</div>
-      <div class="free-sub">Controleer de API key en Calendar ID</div>
-    `;
+      <div class="free-sub">Controleer de API key en Calendar ID</div>`;
     document.getElementById('upcomingList').innerHTML = '';
   }
 
-  // ── HELPERS ───────────────────────────────────────────────────────────────────
-  function fmt(date) {
-    return `${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}`;
+  function fmt(d) {
+    return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
   }
 
   function escHtml(str) {
     return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  // ── GO ────────────────────────────────────────────────────────────────────────
   init();
 </script>
 </body>

@@ -89,17 +89,19 @@
 
     .time {
       font-family: 'DM Mono', monospace;
-      font-size: 18px;
-      font-weight: 400;
-      color: var(--text-secondary);
-      letter-spacing: 0.05em;
+      font-size: 36px;
+      font-weight: 500;
+      color: var(--text-primary);
+      letter-spacing: 0.04em;
+      line-height: 1;
     }
 
     .date {
       font-size: 13px;
       color: var(--text-tertiary);
-      margin-top: 4px;
+      margin-top: 6px;
       letter-spacing: 0.06em;
+      text-align: right;
     }
 
     /* Main status */
@@ -142,7 +144,7 @@
 
     .meeting-title {
       font-size: clamp(36px, 6vw, 64px);
-      font-weight: 300;
+      font-weight: 500;
       line-height: 1.1;
       letter-spacing: -0.02em;
       color: var(--text-primary);
@@ -179,7 +181,7 @@
     /* Free state */
     .free-title {
       font-size: clamp(48px, 8vw, 80px);
-      font-weight: 300;
+      font-weight: 500;
       letter-spacing: -0.03em;
       color: var(--accent);
       line-height: 1;
@@ -408,15 +410,25 @@
 
     .config-hint a { color: var(--free-accent); text-decoration: none; }
 
-    /* Tap to configure (hidden zone) */
-    .tap-zone {
+    /* Settings button */
+    .settings-btn {
       position: fixed;
-      bottom: 0;
-      right: 0;
-      width: 60px;
-      height: 60px;
+      bottom: 20px;
+      right: 20px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
       z-index: 50;
+      transition: background 0.2s;
     }
+    .settings-btn:active { background: rgba(255,255,255,0.16); }
+    .settings-btn svg { opacity: 0.3; }
 
     .hidden { display: none !important; }
   </style>
@@ -486,8 +498,12 @@
   </div>
 </div>
 
-<!-- Secret tap zone (bottom-right corner, 5 taps = open config) -->
-<div class="tap-zone" id="tapZone"></div>
+<!-- Settings button (rechtsonder) -->
+<div class="settings-btn" id="settingsBtn">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+  </svg>
+</div>
 
 <script>
   // ── CONFIG ──────────────────────────────────────────────────────────────────
@@ -539,14 +555,8 @@
     refreshInterval = setInterval(fetchEvents, 30000);
   }
 
-  // Secret tap zone: 5 taps to re-open config
-  let tapCount = 0, tapTimer = null;
-  document.getElementById('tapZone').addEventListener('click', () => {
-    tapCount++;
-    clearTimeout(tapTimer);
-    tapTimer = setTimeout(() => { tapCount = 0; }, 2000);
-    if (tapCount >= 5) { tapCount = 0; showConfig(); }
-  });
+  // Settings button
+  document.getElementById('settingsBtn').addEventListener('click', showConfig);
 
   // ── CLOCK ────────────────────────────────────────────────────────────────────
   function startClock() {
@@ -652,7 +662,7 @@
           <span class="status-dot"></span>
           <span class="status-text">Bezet</span>
         </div>
-        <div class="meeting-title">${escHtml(current.summary || 'Vergadering')}</div>
+        <div class="meeting-title">${escHtml(current.summary || 'Zonder titel')}</div>
         <div class="meeting-meta">
           <span class="meta-chip">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -675,7 +685,7 @@
           <span class="status-text">Begint zo</span>
         </div>
         <div class="free-title" style="color:var(--soon-accent)">Over ${minsToNext} min</div>
-        <div class="free-sub">${escHtml(nextEvent.summary || 'Vergadering')} start om ${fmt(new Date(nextEvent.start.dateTime))}</div>
+        <div class="free-sub">${escHtml(nextEvent.summary || 'Zonder titel')} start om ${fmt(new Date(nextEvent.start.dateTime))}</div>
       `;
     } else {
       const freeUntil = nextEvent
@@ -703,7 +713,7 @@
         return `
           <div class="upcoming-item">
             <span class="upcoming-time">${fmt(s)}</span>
-            <span class="upcoming-name">${escHtml(e.summary || 'Vergadering')}</span>
+            <span class="upcoming-name">${escHtml(e.summary || 'Zonder titel')}</span>
             <span class="upcoming-duration">${dur} min</span>
           </div>
         `;

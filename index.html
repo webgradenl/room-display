@@ -11,7 +11,6 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
       --free: #1a1a1a;
       --free-accent: #00e5a0;
@@ -29,7 +28,6 @@
       --accent: var(--free-accent);
       --accent-dim: var(--free-accent-dim);
     }
-
     html, body {
       height: 100%;
       width: 100%;
@@ -40,7 +38,10 @@
       -webkit-font-smoothing: antialiased;
       touch-action: none;
       user-select: none;
+      transition: filter 1.5s ease;
     }
+    /* Eco-mode: dimt het scherm visueel buiten kantooruren */
+    body.eco-mode { filter: brightness(0.35) contrast(0.9); }
 
     #app {
       height: 100vh;
@@ -51,7 +52,6 @@
       position: relative;
       transition: background 0.8s ease;
     }
-
     #app::before {
       content: '';
       position: fixed;
@@ -65,16 +65,13 @@
       transition: background 0.8s ease;
       z-index: 0;
     }
-
     .content { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; }
-
     .header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       margin-bottom: auto;
     }
-
     .room-name {
       font-size: 15px;
       font-weight: 500;
@@ -82,9 +79,7 @@
       text-transform: uppercase;
       color: var(--text-secondary);
     }
-
     .clock-block { text-align: right; }
-
     .time {
       font-family: 'DM Mono', monospace;
       font-size: 36px;
@@ -93,7 +88,6 @@
       letter-spacing: 0.04em;
       line-height: 1;
     }
-
     .date {
       font-size: 13px;
       color: var(--text-tertiary);
@@ -101,7 +95,6 @@
       letter-spacing: 0.06em;
       text-align: right;
     }
-
     .main {
       display: flex;
       flex-direction: column;
@@ -109,14 +102,12 @@
       flex: 1;
       padding: 40px 0;
     }
-
     .status-label {
       display: inline-flex;
       align-items: center;
       gap: 10px;
       margin-bottom: 20px;
     }
-
     .status-dot {
       width: 10px;
       height: 10px;
@@ -125,11 +116,12 @@
       box-shadow: 0 0 12px var(--accent);
       animation: pulse 2.5s ease-in-out infinite;
     }
-
     @keyframes pulse {
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.6; transform: scale(0.85); }
     }
+    /* Eco-mode: schakel pulse uit om GPU rustig te houden */
+    body.eco-mode .status-dot { animation: none; }
 
     .status-text {
       font-size: 13px;
@@ -138,7 +130,6 @@
       text-transform: uppercase;
       color: var(--accent);
     }
-
     .meeting-title {
       font-size: clamp(36px, 6vw, 64px);
       font-weight: 500;
@@ -148,14 +139,12 @@
       max-width: 80%;
       margin-bottom: 20px;
     }
-
     .meeting-meta {
       display: flex;
       align-items: center;
       gap: 10px;
       flex-wrap: wrap;
     }
-
     .meta-chip {
       display: inline-flex;
       align-items: center;
@@ -169,9 +158,7 @@
       font-family: 'DM Sans', sans-serif;
       letter-spacing: 0.01em;
     }
-
     .meta-chip svg { opacity: 0.5; flex-shrink: 0; }
-
     .free-title {
       font-size: clamp(48px, 8vw, 80px);
       font-weight: 500;
@@ -180,20 +167,17 @@
       line-height: 1;
       margin-bottom: 12px;
     }
-
     .free-sub {
       font-size: 18px;
       color: var(--text-secondary);
       font-weight: 300;
     }
-
     .divider {
       width: 100%;
       height: 1px;
       background: var(--border);
       margin: 32px 0;
     }
-
     .upcoming-label {
       font-size: 11px;
       font-weight: 500;
@@ -202,9 +186,7 @@
       color: var(--text-tertiary);
       margin-bottom: 20px;
     }
-
     .upcoming-list { display: flex; flex-direction: column; gap: 12px; }
-
     .upcoming-item {
       display: flex;
       align-items: center;
@@ -214,7 +196,6 @@
       border-radius: 12px;
       border: 1px solid var(--border);
     }
-
     .upcoming-time {
       font-family: 'DM Mono', monospace;
       font-size: 13px;
@@ -222,7 +203,6 @@
       white-space: nowrap;
       min-width: 100px;
     }
-
     .upcoming-name {
       font-size: 15px;
       font-weight: 400;
@@ -231,7 +211,6 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-
     .upcoming-duration {
       margin-left: auto;
       font-family: 'DM Mono', monospace;
@@ -239,11 +218,8 @@
       color: var(--text-tertiary);
       white-space: nowrap;
     }
-
     .no-upcoming { font-size: 14px; color: var(--text-tertiary); font-style: italic; }
-
     .progress-container { margin-top: 24px; display: flex; align-items: center; gap: 16px; }
-
     .progress-track {
       flex: 1;
       height: 3px;
@@ -251,7 +227,6 @@
       border-radius: 100px;
       overflow: hidden;
     }
-
     .progress-fill {
       height: 100%;
       background: var(--accent);
@@ -259,14 +234,12 @@
       transition: width 1s linear;
       opacity: 0.6;
     }
-
     .progress-label {
       font-family: 'DM Mono', monospace;
       font-size: 12px;
       color: var(--text-tertiary);
       white-space: nowrap;
     }
-
     .state-overlay {
       position: fixed;
       inset: 0;
@@ -278,7 +251,6 @@
       background: #0f0f0f;
       z-index: 100;
     }
-
     .loader {
       width: 32px;
       height: 32px;
@@ -287,11 +259,8 @@
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
     }
-
     @keyframes spin { to { transform: rotate(360deg); } }
-
     .state-text { font-size: 14px; color: var(--text-tertiary); letter-spacing: 0.06em; }
-
     .config-screen {
       position: fixed;
       inset: 0;
@@ -302,16 +271,14 @@
       justify-content: center;
       padding: 48px;
       z-index: 200;
+      overflow-y: auto;
     }
-
     .config-inner { max-width: 520px; width: 100%; }
-
     .config-title { font-size: 28px; font-weight: 300; margin-bottom: 8px; color: var(--text-primary); }
-
     .config-sub { font-size: 14px; color: var(--text-secondary); margin-bottom: 40px; line-height: 1.6; }
-
     .config-field { margin-bottom: 20px; }
-
+    .config-row { display: flex; gap: 12px; }
+    .config-row .config-field { flex: 1; }
     .config-label {
       display: block;
       font-size: 11px;
@@ -321,7 +288,6 @@
       color: var(--text-tertiary);
       margin-bottom: 8px;
     }
-
     .config-input {
       width: 100%;
       background: var(--surface);
@@ -334,9 +300,7 @@
       outline: none;
       transition: border-color 0.2s;
     }
-
     .config-input:focus { border-color: var(--free-accent); }
-
     .config-btn {
       width: 100%;
       padding: 16px;
@@ -352,11 +316,8 @@
       margin-top: 8px;
       transition: opacity 0.2s;
     }
-
     .config-btn:hover { opacity: 0.85; }
-
     .config-hint { margin-top: 20px; font-size: 12px; color: var(--text-tertiary); line-height: 1.6; }
-
     .settings-btn {
       position: fixed;
       bottom: 20px;
@@ -375,12 +336,10 @@
     }
     .settings-btn:active { background: rgba(255,255,255,0.16); }
     .settings-btn svg { opacity: 0.3; }
-
     .hidden { display: none !important; }
   </style>
 </head>
 <body>
-
 <div class="config-screen" id="configScreen">
   <div class="config-inner">
     <div class="room-name" style="margin-bottom:32px; font-size:13px;">⬡ VERGADERRUIMTE DISPLAY</div>
@@ -398,16 +357,24 @@
       <label class="config-label" for="inputRoomName">Naam van de ruimte</label>
       <input class="config-input" id="inputRoomName" type="text" placeholder="Vergaderruimte A" autocomplete="off">
     </div>
+    <div class="config-row">
+      <div class="config-field">
+        <label class="config-label" for="inputEcoStart">Eco-mode start</label>
+        <input class="config-input" id="inputEcoStart" type="text" placeholder="18:00" autocomplete="off">
+      </div>
+      <div class="config-field">
+        <label class="config-label" for="inputEcoEnd">Eco-mode einde</label>
+        <input class="config-input" id="inputEcoEnd" type="text" placeholder="08:00" autocomplete="off">
+      </div>
+    </div>
     <button class="config-btn" onclick="saveConfig()">Opslaan en starten</button>
-    <p class="config-hint">Tik op het tandwiel rechtsonder om terug te komen naar dit scherm.</p>
+    <p class="config-hint">Tik op het tandwiel rechtsonder om terug te komen naar dit scherm. Eco-mode dimt het scherm 's avonds en in het weekend om accu te sparen.</p>
   </div>
 </div>
-
 <div class="state-overlay hidden" id="loadingScreen">
   <div class="loader"></div>
   <span class="state-text">Agenda ophalen...</span>
 </div>
-
 <div id="app">
   <div class="content">
     <div class="header">
@@ -425,61 +392,110 @@
     </div>
   </div>
 </div>
-
 <div class="settings-btn" id="settingsBtn">
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
     <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
   </svg>
 </div>
-
 <script>
-  let API_KEY = localStorage.getItem('gcal_api_key') || '';
-  let CALENDAR_ID = localStorage.getItem('gcal_cal_id') || '';
-  let ROOM_NAME = localStorage.getItem('gcal_room_name') || 'Vergaderruimte';
+  /* ============================================================
+   * Vergaderruimte display - battery-optimized versie
+   * ============================================================
+   * Belangrijkste verschillen t.o.v. de oude versie:
+   *  - Calendar fetch: elke 5 min (ipv 30 sec)
+   *  - Klok update: synced op de minuut (ipv elke seconde)
+   *  - Display-rerender: 1x per minuut (ipv elke 10s, recursief)
+   *  - Page Visibility API: pauzeert alles als de iPad slaapt
+   *  - Eco-mode: dimt scherm visueel buiten kantooruren + weekend
+   *  - "Begint zo"-drempel: 10 min (ipv 15), iets minder kleur-switches
+   * ============================================================ */
+
+  const FETCH_INTERVAL_MS    = 5 * 60 * 1000;   // 5 minuten
+  const DISPLAY_REFRESH_MS   = 60 * 1000;       // 1 minuut
+  const SOON_THRESHOLD_MIN   = 10;              // "Begint zo" vanaf 10 min
+
+  let API_KEY      = localStorage.getItem('gcal_api_key')   || '';
+  let CALENDAR_ID  = localStorage.getItem('gcal_cal_id')    || '';
+  let ROOM_NAME    = localStorage.getItem('gcal_room_name') || 'Vergaderruimte';
+  let ECO_START    = localStorage.getItem('gcal_eco_start') || '18:00';
+  let ECO_END      = localStorage.getItem('gcal_eco_end')   || '08:00';
+
   let events = [];
-  let refreshInterval = null;
+  let fetchTimer    = null;
+  let clockTimeout  = null;
+  let clockInterval = null;
+  let displayTimer  = null;
+  let ecoTimer      = null;
 
   function init() {
-    if (!API_KEY || !CALENDAR_ID) { showConfig(); }
-    else {
+    if (!API_KEY || !CALENDAR_ID) {
+      showConfig();
+    } else {
       hideConfig();
       document.getElementById('roomNameDisplay').textContent = ROOM_NAME;
-      startClock();
-      fetchEvents();
-      refreshInterval = setInterval(fetchEvents, 30000);
+      startAll();
     }
+  }
+
+  function startAll() {
+    startClock();
+    updateEcoMode();
+    ecoTimer = setInterval(updateEcoMode, 5 * 60 * 1000); // check eco-status elke 5 min
+    fetchEvents();
+    fetchTimer = setInterval(fetchEvents, FETCH_INTERVAL_MS);
+    displayTimer = setInterval(() => {
+      if (events !== null && !document.hidden) renderDisplay();
+    }, DISPLAY_REFRESH_MS);
+  }
+
+  function stopAll() {
+    clearInterval(fetchTimer);    fetchTimer = null;
+    clearInterval(displayTimer);  displayTimer = null;
+    clearInterval(clockInterval); clockInterval = null;
+    clearTimeout(clockTimeout);   clockTimeout = null;
+    clearInterval(ecoTimer);      ecoTimer = null;
   }
 
   function showConfig() {
     document.getElementById('configScreen').classList.remove('hidden');
-    document.getElementById('inputApiKey').value = API_KEY;
-    document.getElementById('inputCalId').value = CALENDAR_ID;
+    document.getElementById('inputApiKey').value   = API_KEY;
+    document.getElementById('inputCalId').value    = CALENDAR_ID;
     document.getElementById('inputRoomName').value = ROOM_NAME;
+    document.getElementById('inputEcoStart').value = ECO_START;
+    document.getElementById('inputEcoEnd').value   = ECO_END;
   }
-
   function hideConfig() { document.getElementById('configScreen').classList.add('hidden'); }
 
   function saveConfig() {
-    const key = document.getElementById('inputApiKey').value.trim();
-    const calId = document.getElementById('inputCalId').value.trim();
-    const name = document.getElementById('inputRoomName').value.trim() || 'Vergaderruimte';
-    if (!key || !calId) { alert('Vul beide velden in.'); return; }
-    localStorage.setItem('gcal_api_key', key);
-    localStorage.setItem('gcal_cal_id', calId);
+    const key      = document.getElementById('inputApiKey').value.trim();
+    const calId    = document.getElementById('inputCalId').value.trim();
+    const name     = document.getElementById('inputRoomName').value.trim() || 'Vergaderruimte';
+    const ecoStart = document.getElementById('inputEcoStart').value.trim() || '18:00';
+    const ecoEnd   = document.getElementById('inputEcoEnd').value.trim()   || '08:00';
+    if (!key || !calId) { alert('Vul API key en Calendar ID in.'); return; }
+    localStorage.setItem('gcal_api_key',   key);
+    localStorage.setItem('gcal_cal_id',    calId);
     localStorage.setItem('gcal_room_name', name);
+    localStorage.setItem('gcal_eco_start', ecoStart);
+    localStorage.setItem('gcal_eco_end',   ecoEnd);
     API_KEY = key; CALENDAR_ID = calId; ROOM_NAME = name;
+    ECO_START = ecoStart; ECO_END = ecoEnd;
     hideConfig();
     document.getElementById('roomNameDisplay').textContent = ROOM_NAME;
-    clearInterval(refreshInterval);
-    startClock();
-    fetchEvents();
-    refreshInterval = setInterval(fetchEvents, 30000);
+    stopAll();
+    startAll();
   }
-
   document.getElementById('settingsBtn').addEventListener('click', showConfig);
 
-  function startClock() { updateClock(); setInterval(updateClock, 1000); }
-
+  /* ----- Klok: synced op de minuut ----- */
+  function startClock() {
+    updateClock();
+    const msToNextMinute = 60000 - (Date.now() % 60000);
+    clockTimeout = setTimeout(() => {
+      updateClock();
+      clockInterval = setInterval(updateClock, 60000);
+    }, msToNextMinute);
+  }
   function updateClock() {
     const now = new Date();
     document.getElementById('clock').textContent =
@@ -490,7 +506,31 @@
       `${days[now.getDay()]} ${now.getDate()} ${months[now.getMonth()]}`;
   }
 
+  /* ----- Eco-mode: dim het scherm buiten kantooruren + in het weekend ----- */
+  function parseHM(s) {
+    const m = /^(\d{1,2}):(\d{2})$/.exec(s);
+    if (!m) return null;
+    return parseInt(m[1],10) * 60 + parseInt(m[2],10);
+  }
+  function updateEcoMode() {
+    const now = new Date();
+    const day = now.getDay(); // 0 = zo, 6 = za
+    const isWeekend = (day === 0 || day === 6);
+    const mins = now.getHours() * 60 + now.getMinutes();
+    const start = parseHM(ECO_START);
+    const end   = parseHM(ECO_END);
+    let inEcoWindow = false;
+    if (start !== null && end !== null) {
+      // 18:00 -> 08:00 wraps over middernacht
+      inEcoWindow = (start > end) ? (mins >= start || mins < end) : (mins >= start && mins < end);
+    }
+    const eco = isWeekend || inEcoWindow;
+    document.body.classList.toggle('eco-mode', eco);
+  }
+
+  /* ----- Calendar ophalen ----- */
   async function fetchEvents() {
+    if (document.hidden) return; // bespaart netwerk-radio
     document.getElementById('loadingScreen').classList.remove('hidden');
     const now = new Date();
     const timeMax = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59).toISOString();
@@ -511,7 +551,6 @@
 
   function renderDisplay() {
     if (events === null) { renderError(); return; }
-
     const now = new Date();
     const current = events.find(e => {
       const s = new Date(e.start.dateTime || e.start.date);
@@ -521,8 +560,7 @@
     const upcoming = events.filter(e => new Date(e.start.dateTime || e.start.date) > now).slice(0, 3);
     const nextEvent = events.find(e => new Date(e.start.dateTime || e.start.date) > now);
     const minsToNext = nextEvent ? Math.round((new Date(nextEvent.start.dateTime || nextEvent.start.date) - now) / 60000) : null;
-    const isSoon = !current && minsToNext !== null && minsToNext <= 15;
-
+    const isSoon = !current && minsToNext !== null && minsToNext <= SOON_THRESHOLD_MIN;
     const root = document.documentElement;
     if (current) {
       root.style.setProperty('--accent', 'var(--busy-accent)');
@@ -534,9 +572,7 @@
       root.style.setProperty('--accent', 'var(--free-accent)');
       root.style.setProperty('--accent-dim', 'var(--free-accent-dim)');
     }
-
     const main = document.getElementById('mainContent');
-
     if (current) {
       const start = new Date(current.start.dateTime);
       const end = new Date(current.end.dateTime);
@@ -549,7 +585,6 @@
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           ${escHtml(a.displayName || a.email.split('@')[0])}
         </span>`).join('');
-
       main.innerHTML = `
         <div class="status-label"><span class="status-dot"></span><span class="status-text">Bezet</span></div>
         <div class="meeting-title">${escHtml(current.summary || 'Zonder titel')}</div>
@@ -580,7 +615,6 @@
         <div class="free-title">Vrij</div>
         <div class="free-sub">Beschikbaar${freeUntil}</div>`;
     }
-
     const list = document.getElementById('upcomingList');
     list.innerHTML = upcoming.length === 0
       ? `<span class="no-upcoming">Geen verdere afspraken vandaag</span>`
@@ -593,8 +627,8 @@
             <span class="upcoming-duration">${Math.round((en - s) / 60000)} min</span>
           </div>`;
         }).join('');
-
-    setTimeout(() => { if (API_KEY && CALENDAR_ID) renderDisplay(); }, 10000);
+    /* NB: GEEN recursieve setTimeout meer hier.
+       De displayTimer (1x per minuut) zorgt voor updates. */
   }
 
   function renderError() {
@@ -611,10 +645,18 @@
   function fmt(d) {
     return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
   }
-
   function escHtml(str) {
     return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
+
+  /* ----- Page Visibility: pauzeer alles als de iPad slaapt ----- */
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      stopAll();
+    } else if (API_KEY && CALENDAR_ID) {
+      startAll();
+    }
+  });
 
   init();
 </script>
